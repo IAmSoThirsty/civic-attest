@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://civic-attest.org/schemas/attestation.schema.json",
+  "title": "DeviceAttestation",
+  "description": "Optional device attestation layer",
+  "type": "object",
+  "required": [
+    "device_cert_chain",
+    "firmware_hash",
+    "capture_timestamp",
+    "sensor_signature"
+  ],
+  "properties": {
+    "device_cert_chain": {
+      "type": "array",
+      "description": "Device certificate chain",
+      "items": {
+        "type": "string",
+        "description": "Base64-encoded certificate"
+      },
+      "minItems": 1
+    },
+    "firmware_hash": {
+      "type": "string",
+      "description": "Hash of the firmware",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "capture_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the capture occurred (ISO 8601)"
+    },
+    "sensor_signature": {
+      "type": "string",
+      "description": "Signature from the sensor",
+      "pattern": "^[0-9a-fA-F]+$"
+    }
+  }
+}

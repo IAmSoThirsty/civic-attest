@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://civic-attest.org/schemas/ledger-entry.schema.json",
+  "title": "LedgerEntry",
+  "description": "Entry in the append-only ledger",
+  "type": "object",
+  "required": [
+    "entry_hash",
+    "timestamp",
+    "signer_identity_id",
+    "signature_hash",
+    "entry_type",
+    "sequence_number"
+  ],
+  "properties": {
+    "entry_hash": {
+      "type": "string",
+      "description": "Hash of the entry content",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the entry was created (ISO 8601)"
+    },
+    "signer_identity_id": {
+      "type": "string",
+      "description": "Identity that signed"
+    },
+    "signature_hash": {
+      "type": "string",
+      "description": "Hash of the signature",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "entry_type": {
+      "type": "string",
+      "description": "Type of entry",
+      "enum": [
+        "signature",
+        "revocation",
+        "key_ceremony",
+        "rotation",
+        "governance"
+      ]
+    },
+    "sequence_number": {
+      "type": "integer",
+      "description": "Sequence number in the ledger",
+      "minimum": 1
+    }
+  }
+}

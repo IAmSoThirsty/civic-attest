@@ -1,0 +1,60 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+/cmd/*/cmd
+
+# Test binaries
+*.test
+*.out
+
+# Go workspace file
+go.work
+
+# Coverage
+*.coverage
+*.coverprofile
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+/dist/
+/build/
+
+# Temporary files
+/tmp/
+*.tmp
+
+# HSM test data
+*.hsm-test
+
+# Local configuration
+*.local.yaml
+*.local.json
+
+# Secrets (should never be committed)
+*.key
+*.pem
+*.p12
+!testdata/**/*.pem
+!testdata/**/*.key
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
