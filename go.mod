@@ -1,0 +1,15 @@
+module github.com/IAmSoThirsty/civic-attest
+
+go 1.21
+
+require (
+	github.com/fxamacker/cbor/v2 v2.5.0
+	github.com/zeebo/blake3 v0.2.3
+	golang.org/x/crypto v0.18.0
+)
+
+require (
+	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
+	github.com/x448/float16 v0.8.4 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+)

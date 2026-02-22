@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://civic-attest.org/schemas/revocation.schema.json",
+  "title": "RevocationRecord",
+  "description": "Record of a key revocation event",
+  "type": "object",
+  "required": [
+    "revocation_id",
+    "identity_id",
+    "timestamp",
+    "reason",
+    "trustee_signatures",
+    "ledger_entry_hash",
+    "irreversible"
+  ],
+  "properties": {
+    "revocation_id": {
+      "type": "string",
+      "description": "Unique identifier for this revocation"
+    },
+    "identity_id": {
+      "type": "string",
+      "description": "Identity being revoked"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the revocation occurred (ISO 8601)"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for revocation",
+      "enum": [
+        "compromise_detected",
+        "trustee_quorum_vote",
+        "expiration_reached",
+        "office_transition",
+        "emergency"
+      ]
+    },
+    "trustee_signatures": {
+      "type": "array",
+      "description": "Signatures from the quorum",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-fA-F]+$"
+      },
+      "minItems": 3
+    },
+    "ledger_entry_hash": {
+      "type": "string",
+      "description": "Hash of the ledger entry",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "irreversible": {
+      "type": "boolean",
+      "description": "Whether this revocation is permanent"
+    }
+  }
+}

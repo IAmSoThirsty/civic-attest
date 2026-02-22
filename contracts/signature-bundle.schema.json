@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://civic-attest.org/schemas/signature-bundle.schema.json",
+  "title": "SignatureBundle",
+  "description": "Complete signature bundle format for civic attestation",
+  "type": "object",
+  "required": [
+    "content_hash",
+    "content_hash_algorithm",
+    "canonical_format_version",
+    "signer_identity_id",
+    "key_version",
+    "signature",
+    "timestamp_token",
+    "ledger_entry_hash",
+    "merkle_inclusion_proof",
+    "bundle_version"
+  ],
+  "properties": {
+    "content_hash": {
+      "type": "string",
+      "description": "Hex-encoded hash of the canonical content",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "content_hash_algorithm": {
+      "type": "string",
+      "description": "Hash algorithm used",
+      "enum": ["SHA-256", "SHA-3-512", "BLAKE3"]
+    },
+    "canonical_format_version": {
+      "type": "string",
+      "description": "Version of canonicalization format"
+    },
+    "signer_identity_id": {
+      "type": "string",
+      "description": "Identity of the signer"
+    },
+    "key_version": {
+      "type": "integer",
+      "description": "Version of the key used",
+      "minimum": 1
+    },
+    "signature": {
+      "type": "string",
+      "description": "Hex-encoded cryptographic signature",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "timestamp_token": {
+      "type": "string",
+      "description": "RFC 3161 timestamp token (base64 encoded)"
+    },
+    "ledger_entry_hash": {
+      "type": "string",
+      "description": "Hash of the ledger entry",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "merkle_inclusion_proof": {
+      "$ref": "#/definitions/inclusion_proof"
+    },
+    "bundle_version": {
+      "type": "string",
+      "description": "Version of the bundle format"
+    }
+  },
+  "definitions": {
+    "inclusion_proof": {
+      "type": "object",
+      "required": ["leaf_index", "leaf_hash", "tree_size", "path"],
+      "properties": {
+        "leaf_index": {
+          "type": "integer",
+          "description": "Index of the leaf in the tree",
+          "minimum": 0
+        },
+        "leaf_hash": {
+          "type": "string",
+          "description": "Hash of the leaf",
+          "pattern": "^[0-9a-fA-F]+$"
+        },
+        "tree_size": {
+          "type": "integer",
+          "description": "Size of the tree at proof time",
+          "minimum": 1
+        },
+        "path": {
+          "type": "array",
+          "description": "Hash path from leaf to root",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]+$"
+          }
+        }
+      }
+    }
+  }
+}
