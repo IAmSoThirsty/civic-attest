@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://civic-attest.org/schemas/attestation.schema.json",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/attestation.schema.json",
   "title": "DeviceAttestation",
   "description": "Optional device attestation layer",
   "type": "object",

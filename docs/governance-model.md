@@ -357,4 +357,4 @@ Confidential - maintained by trustees
 
 **Appendix C: Governance Decision Log**
 
-Public ledger entries: https://civic-attest.org/governance
+See repository commit history for governance decisions.

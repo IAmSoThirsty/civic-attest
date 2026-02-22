@@ -13,10 +13,7 @@ This guide walks through the complete process of verifying a signature bundle in
 ### 2.1 Installation
 
 ```bash
-# Download verifier binary
-wget https://civic-attest.org/releases/verifier-v1.0
-
-# Or build from source
+# Build from source
 git clone https://github.com/IAmSoThirsty/civic-attest
 cd civic-attest
 make build
@@ -59,7 +56,7 @@ You need three components:
 
 **Example:**
 ```bash
-# Download from official source
+# Download from official source (replace with actual government URLs)
 curl -O https://example.gov/announcement.txt
 curl -O https://example.gov/announcement.txt.sig
 curl -O https://example.gov/keys/mayor-v1.pub
@@ -537,4 +534,4 @@ func CustomVerify(bundle *Bundle) error {
 
 ---
 
-**Support:** For questions or issues, see https://civic-attest.org/support
+**Support:** For questions or issues, see https://github.com/IAmSoThirsty/civic-attest/issues

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://civic-attest.org/schemas/identity.schema.json",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/identity.schema.json",
   "title": "Identity",
   "description": "Cryptographic identity in the civic attestation system",
   "type": "object",

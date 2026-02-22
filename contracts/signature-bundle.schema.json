@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://civic-attest.org/schemas/signature-bundle.schema.json",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/signature-bundle.schema.json",
   "title": "SignatureBundle",
   "description": "Complete signature bundle format for civic attestation",
   "type": "object",
