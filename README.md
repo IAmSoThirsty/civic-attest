@@ -273,6 +273,12 @@ Comprehensive documentation available in `/docs`:
 - [Canonical Encoding Specification](docs/canonical-encoding-spec.md) - Formal CBOR/JSON rules
 - [HSM Operational Constraints](docs/hsm-operational-constraints.md) - Enhanced HSM security controls
 
+### Production Operations
+- [Operational Tuning Guide](docs/operational-tuning.md) - Configuration and resource planning
+- [Performance Scaling Guide](docs/performance-scaling.md) - Benchmarks and optimization strategies
+- [Adoption Strategy](docs/adoption-strategy.md) - Onboarding and implementation roadmap
+- [API Reference](docs/api-reference.md) - Complete REST API documentation
+
 ## API
 
 ### REST API

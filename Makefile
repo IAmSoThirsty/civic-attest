@@ -1,4 +1,4 @@
-.PHONY: all build test clean install lint fmt vet
+.PHONY: all build test clean install lint fmt vet benchmark load-test help
 
 # Go parameters
 GOCMD=go
@@ -84,3 +84,99 @@ sbom:
 # Reproducible build
 reproducible-build:
 	$(GOBUILD) -trimpath -ldflags="-buildid=" -o $(BIN_DIR)/signer-reproducible ./cmd/signer
+
+# Performance benchmarking
+benchmark:
+	$(GOTEST) -bench=. -benchmem -benchtime=10s ./...
+
+benchmark-baseline:
+	@mkdir -p benchmarks
+	$(GOTEST) -bench=. -benchmem -benchtime=10s ./... > benchmarks/baseline.txt
+
+benchmark-compare:
+	@mkdir -p benchmarks
+	$(GOTEST) -bench=. -benchmem -benchtime=10s ./... > benchmarks/current.txt
+	@which benchstat > /dev/null || (echo "benchstat not installed, run: go install golang.org/x/perf/cmd/benchstat@latest" && exit 1)
+	benchstat benchmarks/baseline.txt benchmarks/current.txt
+
+# Load testing
+load-test:
+	@which k6 > /dev/null || (echo "k6 not installed" && exit 1)
+	@mkdir -p tests/load
+	k6 run tests/load/signature-load.js
+
+stress-test:
+	@which k6 > /dev/null || (echo "k6 not installed" && exit 1)
+	@mkdir -p tests/load
+	k6 run tests/load/stress-test.js
+
+# Profiling
+profile-cpu:
+	@mkdir -p profile
+	$(GOTEST) -cpuprofile=profile/cpu.prof -bench=. ./...
+	@echo "Opening CPU profile at http://localhost:8080"
+	go tool pprof -http=:8080 profile/cpu.prof
+
+profile-mem:
+	@mkdir -p profile
+	$(GOTEST) -memprofile=profile/mem.prof -bench=. ./...
+	@echo "Opening memory profile at http://localhost:8080"
+	go tool pprof -http=:8080 profile/mem.prof
+
+# Operational tasks
+health-check:
+	@echo "Performing health check..."
+	@curl -f http://localhost:8080/health || (echo "Health check failed" && exit 1)
+	@curl -f http://localhost:8080/ready || (echo "Readiness check failed" && exit 1)
+	@echo "Health check passed"
+
+# Security scanning
+security-scan:
+	@which gosec > /dev/null || (echo "gosec not installed, run: go install github.com/securego/gosec/v2/cmd/gosec@latest" && exit 1)
+	gosec -fmt=json -out=security-report.json ./...
+
+vulnerability-check:
+	@which govulncheck > /dev/null || (echo "govulncheck not installed, run: go install golang.org/x/vuln/cmd/govulncheck@latest" && exit 1)
+	govulncheck ./...
+
+# Help target
+help:
+	@echo "Civic Attest Makefile Targets:"
+	@echo ""
+	@echo "Build targets:"
+	@echo "  build                 - Build all binaries"
+	@echo "  reproducible-build    - Build with reproducible output"
+	@echo "  docker-build          - Build Docker image"
+	@echo "  docker-run            - Run Docker container"
+	@echo ""
+	@echo "Test targets:"
+	@echo "  test                  - Run all tests with coverage"
+	@echo "  test-unit             - Run unit tests only"
+	@echo "  test-integration      - Run integration tests"
+	@echo "  test-adversarial      - Run adversarial tests"
+	@echo "  test-fuzz             - Run fuzz tests"
+	@echo ""
+	@echo "Performance targets:"
+	@echo "  benchmark             - Run performance benchmarks"
+	@echo "  benchmark-baseline    - Create baseline benchmark"
+	@echo "  benchmark-compare     - Compare with baseline"
+	@echo "  load-test             - Run load tests"
+	@echo "  stress-test           - Run stress tests"
+	@echo "  profile-cpu           - CPU profiling"
+	@echo "  profile-mem           - Memory profiling"
+	@echo ""
+	@echo "Operational targets:"
+	@echo "  health-check          - Check service health"
+	@echo ""
+	@echo "Security targets:"
+	@echo "  security-scan         - Run security scanner"
+	@echo "  vulnerability-check   - Check for vulnerabilities"
+	@echo ""
+	@echo "Other targets:"
+	@echo "  install               - Install dependencies"
+	@echo "  clean                 - Clean build artifacts"
+	@echo "  lint                  - Run linter"
+	@echo "  fmt                   - Format code"
+	@echo "  vet                   - Run go vet"
+	@echo "  sbom                  - Generate SBOM"
+	@echo "  help                  - Show this help message"
