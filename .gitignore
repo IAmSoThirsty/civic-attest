@@ -58,3 +58,14 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Benchmarks and profiling
+/benchmarks/
+/profile/
+*.prof
+
+# Security reports
+security-report.json
+
+# SBOM
+/sbom/

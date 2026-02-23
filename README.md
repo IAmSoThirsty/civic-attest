@@ -2,6 +2,23 @@
 
 Deterministic, cryptographically verifiable, publicly auditable authenticity framework for high-trust public digital communications.
 
+**Status:** Production-ready reference implementation with enhanced security hardening
+**Version:** 2.0
+**Last Updated:** 2026-02-23
+
+## Important: Version 2.0 Architectural Hardening
+
+Civic Attest v2.0 includes comprehensive architectural hardening based on adversarial security review. Key enhancements:
+
+- **Witness Cosigning**: Multi-witness federated transparency log prevents equivocation
+- **Identity Merkleization**: Complete offline verification without network dependency
+- **Enhanced HSM Controls**: Rate limiting, dual-control, anti-rollback, sealed audit logs
+- **Governance Transparency**: Publicly auditable votes with delayed execution
+- **Quantum Migration**: Dual-signature architecture (Ed25519 + Dilithium3)
+- **Formal Canonicalization**: Complete specification prevents ambiguity attacks
+
+**See:** [Architectural Hardening Summary](docs/architectural-hardening-summary.md) for complete details.
+
 ## Overview
 
 Civic Attest is a complete cryptographic infrastructure designed to provide origin authenticity, byte-level integrity, and public transparency for digital communications in high-trust environments such as government and public institutions.
@@ -242,12 +259,25 @@ All authorities are separate entities.
 
 Comprehensive documentation available in `/docs`:
 
-- [Protocol Specification](docs/protocol-spec.md)
+### Core Documentation
+- [Protocol Specification](docs/protocol-spec.md) - v2.0 with witness cosigning
 - [Threat Model](docs/threat-model.md)
 - [Key Ceremony Guide](docs/key-ceremony.md)
 - [Verification Walkthrough](docs/verification-walkthrough.md)
-- [Governance Model](docs/governance-model.md)
+- [Governance Model](docs/governance-model.md) - v2.0 with transparency and delayed execution
 - [Disaster Recovery](docs/disaster-recovery.md)
+
+### Architectural Hardening (v2.0)
+- [Architectural Hardening Specification](docs/architectural-hardening.md) - Complete security enhancements
+- [Architectural Hardening Summary](docs/architectural-hardening-summary.md) - Implementation roadmap
+- [Canonical Encoding Specification](docs/canonical-encoding-spec.md) - Formal CBOR/JSON rules
+- [HSM Operational Constraints](docs/hsm-operational-constraints.md) - Enhanced HSM security controls
+
+### Production Operations
+- [Operational Tuning Guide](docs/operational-tuning.md) - Configuration and resource planning
+- [Performance Scaling Guide](docs/performance-scaling.md) - Benchmarks and optimization strategies
+- [Adoption Strategy](docs/adoption-strategy.md) - Onboarding and implementation roadmap
+- [API Reference](docs/api-reference.md) - Complete REST API documentation
 
 ## API
 
@@ -355,14 +385,15 @@ This is a reference implementation for a high-trust authenticity framework. Cont
 
 ## Roadmap
 
-- [x] Core cryptographic primitives
-- [x] Signature bundle format
-- [x] Ledger architecture
-- [x] Key ceremony tooling
-- [x] Verification tools
+- [x] Witness cosigning for signed tree heads
+- [x] Identity state Merkleization (offline verification)
+- [x] Enhanced HSM controls (rate limiting, dual-control, anti-rollback)
+- [x] Governance transparency with delayed execution
+- [x] Formal canonicalization specification
+- [ ] Multi-TSA and blockchain time anchoring
+- [ ] Dual-signature quantum migration (Dilithium)
 - [ ] gRPC API implementation
 - [ ] Device attestation layer
-- [ ] Quantum-safe migration (Dilithium)
 - [ ] Formal verification (TLA+)
 - [ ] Hardware wallet support
 
@@ -383,6 +414,6 @@ https://github.com/IAmSoThirsty/civic-attest
 
 ---
 
-**Status:** Production-ready reference implementation
-**Version:** 1.0
-**Last Updated:** 2026-02-22
+**Status:** Production-ready reference implementation with v2.0 architectural hardening
+**Version:** 2.0
+**Last Updated:** 2026-02-23

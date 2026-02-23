@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/governance-vote.schema.json",
+  "title": "GovernanceVote",
+  "description": "Governance vote record for transparency ledger with delayed execution",
+  "type": "object",
+  "required": [
+    "proposal_id",
+    "proposal_type",
+    "proposal_hash",
+    "proposal_submitted_at",
+    "votes",
+    "quorum_requirement",
+    "quorum_met",
+    "decision",
+    "delay_period_hours",
+    "execution_permitted_after",
+    "executed_at"
+  ],
+  "properties": {
+    "proposal_id": {
+      "type": "string",
+      "description": "Unique proposal identifier (e.g., PROP-2026-001)",
+      "pattern": "^PROP-\\d{4}-\\d{3,}$"
+    },
+    "proposal_type": {
+      "type": "string",
+      "description": "Type of governance proposal",
+      "enum": [
+        "KEY_ROTATION",
+        "KEY_REVOCATION",
+        "TRUSTEE_ADDITION",
+        "TRUSTEE_REMOVAL",
+        "POLICY_CHANGE",
+        "GOVERNANCE_AMENDMENT",
+        "EMERGENCY_ACTION",
+        "CONFIGURATION_CHANGE",
+        "SYSTEM_UPGRADE"
+      ]
+    },
+    "proposal_hash": {
+      "type": "string",
+      "description": "Hash of complete proposal document",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "proposal_submitted_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When proposal was submitted (ISO 8601)"
+    },
+    "votes": {
+      "type": "array",
+      "description": "Individual trustee votes",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["trustee_id", "vote", "signature", "voted_at"],
+        "properties": {
+          "trustee_id": {
+            "type": "string",
+            "description": "Unique trustee identifier"
+          },
+          "trustee_pubkey_hash": {
+            "type": "string",
+            "description": "Hash of trustee public key",
+            "pattern": "^[0-9a-fA-F]+$"
+          },
+          "vote": {
+            "type": "string",
+            "description": "Vote decision",
+            "enum": ["APPROVE", "REJECT", "ABSTAIN"]
+          },
+          "signature": {
+            "type": "string",
+            "description": "Trustee signature over vote",
+            "pattern": "^[0-9a-fA-F]+$"
+          },
+          "voted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When vote was cast (ISO 8601)"
+          },
+          "rationale": {
+            "type": "string",
+            "description": "Optional voting rationale"
+          }
+        }
+      }
+    },
+    "quorum_requirement": {
+      "type": "string",
+      "description": "Quorum required (e.g., '3-of-5', '4-of-5')",
+      "pattern": "^\\d+-of-\\d+$"
+    },
+    "quorum_met": {
+      "type": "boolean",
+      "description": "Whether quorum was achieved"
+    },
+    "decision": {
+      "type": "string",
+      "description": "Final decision",
+      "enum": ["APPROVED", "REJECTED", "PENDING"]
+    },
+    "delay_period_hours": {
+      "type": "integer",
+      "description": "Delay before execution (hours). 0 for emergency, 24 for moderate, 72 for critical",
+      "minimum": 0,
+      "maximum": 168
+    },
+    "execution_permitted_after": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Earliest time execution is permitted (ISO 8601)"
+    },
+    "executed_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "When proposal was executed (null if not yet executed)"
+    },
+    "executed_by": {
+      "type": "string",
+      "description": "Identity that executed the proposal"
+    },
+    "emergency_override": {
+      "type": "boolean",
+      "description": "Whether emergency override was used to skip delay",
+      "default": false
+    },
+    "emergency_override_justification": {
+      "type": "string",
+      "description": "Justification for emergency override"
+    },
+    "ledger_entry_hash": {
+      "type": "string",
+      "description": "Hash of ledger entry containing this vote record",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "public_announcement_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL to public announcement of decision"
+    }
+  }
+}
