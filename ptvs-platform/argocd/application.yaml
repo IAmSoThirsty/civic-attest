@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ptvs
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/IAmSoThirsty/civic-attest
+    targetRevision: main
+    path: ptvs-platform/helm/ptvs
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: mankind
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
