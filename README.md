@@ -1,23 +1,4 @@
-# civic-attest
 
-Deterministic, cryptographically verifiable, publicly auditable authenticity framework for high-trust public digital communications.
-
-**Status:** Production-ready reference implementation with enhanced security hardening
-**Version:** 2.0
-**Last Updated:** 2026-02-23
-
-## Important: Version 2.0 Architectural Hardening
-
-Civic Attest v2.0 includes comprehensive architectural hardening based on adversarial security review. Key enhancements:
-
-- **Witness Cosigning**: Multi-witness federated transparency log prevents equivocation
-- **Identity Merkleization**: Complete offline verification without network dependency
-- **Enhanced HSM Controls**: Rate limiting, dual-control, anti-rollback, sealed audit logs
-- **Governance Transparency**: Publicly auditable votes with delayed execution
-- **Quantum Migration**: Dual-signature architecture (Ed25519 + Dilithium3)
-- **Formal Canonicalization**: Complete specification prevents ambiguity attacks
-
-**See:** [Architectural Hardening Summary](docs/architectural-hardening-summary.md) for complete details.
 
 ## Overview
 
