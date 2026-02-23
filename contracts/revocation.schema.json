@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://civic-attest.org/schemas/revocation.schema.json",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/revocation.schema.json",
   "title": "RevocationRecord",
   "description": "Record of a key revocation event",
   "type": "object",

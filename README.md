@@ -352,8 +352,6 @@ This is a reference implementation for a high-trust authenticity framework. Cont
 ## Support
 
 - **Issues:** https://github.com/IAmSoThirsty/civic-attest/issues
-- **Documentation:** https://civic-attest.org/docs
-- **Security:** security@civic-attest.org (PGP key available)
 
 ## Roadmap
 
@@ -372,9 +370,7 @@ This is a reference implementation for a high-trust authenticity framework. Cont
 
 **DO NOT** open public issues for security vulnerabilities.
 
-Email: security@civic-attest.org
-
-PGP: Available at https://civic-attest.org/security.asc
+For security issues, please open a private security advisory through GitHub's security tab.
 
 ## Citations
 
