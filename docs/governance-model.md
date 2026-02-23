@@ -1,7 +1,8 @@
 # Governance Model
 
-**Version:** 1.0
-**Last Updated:** 2026-02-22
+**Version:** 2.0
+**Last Updated:** 2026-02-23
+**Status:** Enhanced Security - Transparency and Delayed Execution
 
 ## 1. Overview
 
@@ -116,55 +117,170 @@ The Civic Attest system operates under a multi-stakeholder governance model desi
 
 ## 5. Decision-Making Process
 
-### 5.1 Standard Procedure
+### 5.1 Standard Procedure with Delayed Execution
 
-1. **Proposal** - Any trustee can propose
-2. **Review Period** - Minimum 7 days
-3. **Discussion** - Open to all trustees
-4. **Vote** - Quorum required
-5. **Documentation** - Decision recorded
-6. **Ledger Entry** - Appended to public ledger
-7. **Public Announcement** - Within 24 hours
+**Tier 1: Critical Changes (72-hour mandatory delay)**
+- Key rotation (non-emergency)
+- Governance amendments
+- Trustee changes
+- Major policy changes
 
-### 5.2 Emergency Procedure
+**Tier 2: Moderate Changes (24-hour delay)**
+- Configuration changes
+- Operational parameter adjustments
+- Non-critical updates
 
-1. **Alert** - Emergency declared
+**Tier 3: Emergency Operations (No delay, requires supermajority)**
+- Key compromise response
+- Active attack mitigation
+- System integrity threats
+
+**Enhanced Procedure:**
+
+1. **Proposal** - Any trustee can propose, assigned unique ID (e.g., PROP-2026-001)
+2. **Review Period** - Minimum 7 days for critical changes
+3. **Discussion** - Open to all trustees, documented
+4. **Vote** - Quorum required, each vote cryptographically signed
+5. **Vote Publication** - All votes appended to transparency ledger immediately
+6. **Delay Period** - Mandatory waiting period based on change tier
+7. **Public Review** - Community can review during delay period
+8. **Execution** - Only after delay expires (or emergency override with 4-of-5)
+9. **Ledger Entry** - Execution appended to public ledger
+10. **Public Announcement** - Within 24 hours of execution
+
+**Vote Record Format:**
+```json
+{
+  "proposal_id": "PROP-2026-001",
+  "proposal_type": "KEY_ROTATION",
+  "votes": [
+    {
+      "trustee_id": "trustee-1",
+      "vote": "APPROVE",
+      "signature": "7e4c9d...",
+      "voted_at": "2026-02-23T12:00:00Z"
+    }
+  ],
+  "quorum_met": true,
+  "decision": "APPROVED",
+  "delay_period_hours": 72,
+  "execution_permitted_after": "2026-02-26T12:00:00Z",
+  "executed_at": null
+}
+```
+
+**Benefits of Delayed Execution:**
+- Prevents hasty decisions under coercion
+- Allows community oversight and intervention
+- Transparent governance timeline
+- Public accountability
+
+### 5.2 Emergency Procedure (Bypass Delay)
+
+**Requirements:**
+- Supermajority vote (4 of 5) required to bypass delay
+- Emergency justification documented
+- Public disclosure within 4 hours
+- Post-incident review mandatory
+
+**Procedure:**
+
+1. **Alert** - Emergency declared with justification
 2. **Assembly** - Trustees convene within 4 hours
-3. **Assessment** - Evaluate situation
-4. **Decision** - Quorum vote
-5. **Action** - Execute immediately
+3. **Assessment** - Evaluate situation and threat
+4. **Emergency Vote** - 4-of-5 supermajority required
+5. **Action** - Execute immediately if approved
 6. **Documentation** - Full incident report
-7. **Public Disclosure** - As appropriate
+7. **Public Disclosure** - Within 4 hours, as security permits
+8. **Post-Incident Review** - Within 7 days
+
+### 5.3 Emergency Freeze Mechanism
+
+**Freeze Authority:** Any 2 trustees can initiate emergency freeze
+
+**Freeze Triggers:**
+- Suspected key compromise
+- Ledger inconsistency detected
+- Coordinated attack detected
+- Trustee coercion suspected
+- Unusual governance activity
+
+**Freeze Effects:**
+1. All signing operations halted
+2. Ledger writes paused (read-only mode)
+3. Emergency quorum convened (within 4 hours)
+4. Investigation initiated immediately
+5. Resume requires 3-of-5 vote
+
+**Freeze Duration:**
+- Initial freeze: 24 hours automatic
+- Extended freeze: 3-of-5 vote required
+- Maximum freeze: 7 days without full quorum review
+- Freeze details published to transparency ledger
 
 ## 6. Transparency Requirements
 
 ### 6.1 Public Records
 
 **Must be public:**
-- All governance decisions
-- Key ceremonies (hash)
+- All governance decisions and votes (with signatures)
+- Key ceremonies (hash and attestations)
 - Identity issuances
 - Revocations
 - Ledger entries
 - Audit reports (summary)
+- Witness signatures and cosigning activity
+- Emergency freeze events
+- Delayed execution timelines
+
+**Governance Transparency Ledger:**
+- Dedicated ledger stream for governance actions
+- All trustee votes appended immediately
+- Cryptographically signed by each trustee
+- Cannot be altered retroactively
+- Public API for governance queries
+- Real-time monitoring dashboard
+
+**Vote Publication Format:**
+```json
+{
+  "entry_type": "governance",
+  "proposal_id": "PROP-2026-001",
+  "trustee_votes": [...],
+  "quorum_met": true,
+  "decision": "APPROVED",
+  "delay_expires_at": "2026-02-26T12:00:00Z",
+  "ledger_entry_hash": "a3f2b1...",
+  "timestamp": "2026-02-23T12:00:00Z"
+}
+```
 
 **May be confidential:**
 - Security vulnerability details (until patched)
-- Ongoing investigations
+- Ongoing investigations (during active investigation)
 - Personal information
 - Cryptographic private data
+- Trustee personal security information
 
 ### 6.2 Audit Trail
 
-**All logged:**
-- Trustee actions
-- Quorum votes
-- Key operations
-- Ledger operations
+**All logged to immutable transparency ledger:**
+- Trustee actions with cryptographic signatures
+- Quorum votes with individual trustee signatures
+- Key operations (generation, rotation, revocation)
+- Ledger operations (append, tree head signing)
 - System changes
 - Security events
+- Emergency freeze activations
+- Delayed execution completions
 
-**Retention:** 7 years minimum
+**Log Format:**
+- Cryptographically signed entries
+- Chained hash linking
+- Tampering detectable
+- Cross-verified by witnesses
+
+**Retention:** 7 years minimum (permanent for critical governance decisions)
 
 ## 7. Emergency Procedures
 

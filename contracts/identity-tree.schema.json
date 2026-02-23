@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/identity-tree.schema.json",
+  "title": "IdentityTreeRoot",
+  "description": "Merkleized identity state for offline verification commitment",
+  "type": "object",
+  "required": [
+    "version",
+    "tree_root",
+    "tree_size",
+    "active_identities_root",
+    "revoked_identities_root",
+    "last_updated",
+    "authority_signature"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "description": "Identity tree format version",
+      "const": 1
+    },
+    "tree_root": {
+      "type": "string",
+      "description": "Root hash of complete identity Merkle tree",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "tree_size": {
+      "type": "integer",
+      "description": "Total number of identities in tree",
+      "minimum": 0
+    },
+    "active_identities_root": {
+      "type": "string",
+      "description": "Root hash of active identities subtree",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "revoked_identities_root": {
+      "type": "string",
+      "description": "Root hash of revoked identities subtree",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When identity tree was last updated (ISO 8601)"
+    },
+    "authority_signature": {
+      "type": "string",
+      "description": "Identity authority signature over tree root",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "committed_to_ledger": {
+      "type": "boolean",
+      "description": "Whether this tree root is committed to ledger STH"
+    },
+    "ledger_commitment_reference": {
+      "type": "object",
+      "description": "Reference to ledger STH containing this commitment",
+      "properties": {
+        "tree_size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "root_hash": {
+          "type": "string",
+          "pattern": "^[0-9a-fA-F]+$"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    }
+  }
+}
