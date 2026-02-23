@@ -1,8 +1,8 @@
 # Civic Attest Protocol Specification
 
-**Version:** 1.0
-**Status:** Draft
-**Last Updated:** 2026-02-22
+**Version:** 2.0
+**Status:** Draft - Enhanced Security
+**Last Updated:** 2026-02-23
 
 ## Abstract
 
@@ -38,7 +38,8 @@ The system explicitly does NOT guarantee:
 
 - **Primary:** Ed25519
 - **Secondary:** Ed448 (reserved)
-- **Quantum Migration:** Dilithium (feature flag, reserved)
+- **Post-Quantum:** Dilithium3 (hybrid deployment)
+- **Migration:** Dual-signature support (Ed25519 + Dilithium3)
 
 ### 2.2 Hash Functions
 
@@ -51,16 +52,27 @@ The system explicitly does NOT guarantee:
 ### 2.3 Canonical Encoding
 
 All cryptographic outputs use:
-- **Primary:** Canonical CBOR (RFC 8949)
-- **Alternative:** Deterministic JSON (RFC 8785)
+- **Primary:** Canonical CBOR (RFC 8949, Section 4.2 Deterministic Encoding)
+- **Alternative:** Deterministic JSON (RFC 8785 - JSON Canonicalization Scheme)
 
-**Invariant:** No base64 encoding without canonical ordering.
+**Mandatory Requirements:**
+- Unicode normalization: NFC (Canonical Decomposition + Canonical Composition)
+- No floating point in cryptographic contexts (use rational or string representation)
+- Map keys sorted by lexicographic byte order
+- No indefinite-length encoding
+- Shortest possible integer encoding
+- See Architectural Hardening Specification Section 6 for complete formal specification
+
+**Invariant:** canonical(X) == canonical(canonical(X)) for all X
 
 ### 2.4 Timestamp Authority
 
 - **Standard:** RFC 3161 compliant
+- **Architecture:** Multi-TSA with quorum (minimum 3 independent providers)
 - **Protocol:** HTTP/HTTPS TSA protocol
 - **Format:** ASN.1 DER encoded TimeStampToken
+- **Redundancy:** Blockchain time anchoring (Bitcoin, Ethereum, others)
+- **Frequency:** Multiple TSA timestamps per signature for enhanced reliability
 
 ## 3. Identity Model
 
@@ -172,12 +184,78 @@ Type: Append-only Binary Merkle Tree
 }
 ```
 
-### 5.2 Signed Tree Head
+### 5.2 Signed Tree Head (Enhanced with Witness Cosigning)
 
-- Signed by ledger authority key
-- Published publicly
-- Mirrored by third parties
-- Enables fork detection via gossip
+**Architecture:** Multi-witness federated transparency log
+
+**Signed Tree Head Format v2:**
+```json
+{
+  "sth_version": 2,
+  "tree_size": 1000,
+  "root_hash": "a3f2b1...",
+  "identity_tree_root": "b4c3d2...",
+  "revocation_tree_root": "c5d4e3...",
+  "timestamp": "2026-02-23T12:00:00Z",
+  "ledger_authority_id": "ledger-authority-v1",
+  "ledger_authority_signature": "7e4c9d...",
+  "witness_signatures": [
+    {
+      "witness_id": "witness-org-1",
+      "witness_pubkey_hash": "f3a2b1...",
+      "signature": "8d3e2f...",
+      "signed_at": "2026-02-23T12:00:01Z"
+    },
+    {
+      "witness_id": "witness-org-2",
+      "witness_pubkey_hash": "a1b2c3...",
+      "signature": "9e4f3a...",
+      "signed_at": "2026-02-23T12:00:02Z"
+    },
+    {
+      "witness_id": "witness-org-3",
+      "witness_pubkey_hash": "d4e5f6...",
+      "signature": "1a2b3c...",
+      "signed_at": "2026-02-23T12:00:03Z"
+    }
+  ],
+  "witness_quorum": "3-of-5",
+  "quorum_met": true
+}
+```
+
+**Witness Cosigning Protocol:**
+
+1. **Primary Authority Signs:** Ledger authority computes and signs tree head
+2. **Witness Distribution:** Signed tree head distributed to witness network
+3. **Independent Verification:** Each witness independently:
+   - Verifies tree head cryptographic integrity
+   - Verifies consistency with previous tree head
+   - Verifies append-only property
+   - Checks for equivocation attempts
+4. **Witness Signatures:** Valid witnesses sign tree head
+5. **Quorum Collection:** Collect minimum quorum (3-of-5) of witness signatures
+6. **Publication:** Complete STH with witness signatures published
+7. **Fork Detection:** Verifiers query multiple witnesses and detect split-views
+
+**Security Properties:**
+- **Anti-Equivocation:** Cannot present different logs to different audiences without detection
+- **Split-View Detection:** Clients compare witness signatures across network
+- **Byzantine Tolerance:** Survives f Byzantine failures where n ≥ 3f + 1
+- **Public Accountability:** All witness signatures publicly auditable
+
+**Witness Requirements:**
+- Independent legal entity
+- Separate infrastructure and jurisdiction
+- Real-time monitoring capability
+- Public accountability commitment
+- Participation in gossip protocol
+
+**Gossip Protocol:**
+- Witnesses cross-verify tree heads
+- Automated divergence detection
+- Public alert on inconsistency
+- Community-driven monitoring
 
 ### 5.3 Proofs
 

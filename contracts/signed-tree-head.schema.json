@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/signed-tree-head.schema.json",
+  "title": "SignedTreeHead",
+  "description": "Signed tree head with witness cosigning for append-only ledger (Version 2)",
+  "type": "object",
+  "required": [
+    "sth_version",
+    "tree_size",
+    "root_hash",
+    "identity_tree_root",
+    "revocation_tree_root",
+    "timestamp",
+    "ledger_authority_id",
+    "ledger_authority_signature",
+    "witness_signatures",
+    "witness_quorum",
+    "quorum_met"
+  ],
+  "properties": {
+    "sth_version": {
+      "type": "integer",
+      "description": "Signed tree head format version",
+      "const": 2
+    },
+    "tree_size": {
+      "type": "integer",
+      "description": "Number of entries in the ledger",
+      "minimum": 0
+    },
+    "root_hash": {
+      "type": "string",
+      "description": "Merkle tree root hash",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "identity_tree_root": {
+      "type": "string",
+      "description": "Root hash of identity Merkle tree (for offline verification)",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "revocation_tree_root": {
+      "type": "string",
+      "description": "Root hash of revocation Merkle tree (for offline verification)",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the tree head was signed (ISO 8601)"
+    },
+    "ledger_authority_id": {
+      "type": "string",
+      "description": "Identity of the ledger authority that signed this tree head"
+    },
+    "ledger_authority_signature": {
+      "type": "string",
+      "description": "Ed25519 signature by ledger authority over tree head",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "witness_signatures": {
+      "type": "array",
+      "description": "Array of witness cosignatures",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": [
+          "witness_id",
+          "witness_pubkey_hash",
+          "signature",
+          "signed_at"
+        ],
+        "properties": {
+          "witness_id": {
+            "type": "string",
+            "description": "Unique identifier of the witness organization"
+          },
+          "witness_pubkey_hash": {
+            "type": "string",
+            "description": "SHA-256 hash of witness public key",
+            "pattern": "^[0-9a-fA-F]+$"
+          },
+          "signature": {
+            "type": "string",
+            "description": "Ed25519 signature by witness over tree head",
+            "pattern": "^[0-9a-fA-F]+$"
+          },
+          "signed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When witness signed (ISO 8601)"
+          }
+        }
+      }
+    },
+    "witness_quorum": {
+      "type": "string",
+      "description": "Quorum requirement (e.g., '3-of-5')",
+      "pattern": "^\\d+-of-\\d+$"
+    },
+    "quorum_met": {
+      "type": "boolean",
+      "description": "Whether witness quorum has been achieved"
+    },
+    "blockchain_anchors": {
+      "type": "array",
+      "description": "Optional blockchain time anchoring records",
+      "items": {
+        "type": "object",
+        "required": ["blockchain", "transaction_hash", "block_height", "anchored_at"],
+        "properties": {
+          "blockchain": {
+            "type": "string",
+            "description": "Blockchain name",
+            "enum": ["bitcoin", "ethereum", "polygon", "avalanche", "solana"]
+          },
+          "transaction_hash": {
+            "type": "string",
+            "description": "Transaction hash containing the anchor"
+          },
+          "block_height": {
+            "type": "integer",
+            "description": "Block height of the anchor",
+            "minimum": 0
+          },
+          "anchored_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When anchor was created"
+          }
+        }
+      }
+    }
+  }
+}

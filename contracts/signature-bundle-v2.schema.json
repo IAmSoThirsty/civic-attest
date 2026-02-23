@@ -1,0 +1,263 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/IAmSoThirsty/civic-attest/blob/main/contracts/signature-bundle-v2.schema.json",
+  "title": "SignatureBundleV2",
+  "description": "Enhanced signature bundle with dual-signature quantum migration support and witness cosigning (Version 2)",
+  "type": "object",
+  "required": [
+    "bundle_version",
+    "content_hash",
+    "content_hash_algorithm",
+    "canonical_format_version",
+    "signer_identity_id",
+    "key_version",
+    "signatures",
+    "timestamps",
+    "ledger_entry_hash",
+    "merkle_inclusion_proof"
+  ],
+  "properties": {
+    "bundle_version": {
+      "type": "integer",
+      "description": "Signature bundle format version",
+      "const": 2
+    },
+    "content_hash": {
+      "type": "string",
+      "description": "Hash of canonicalized content",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "content_hash_algorithm": {
+      "type": "string",
+      "description": "Hash algorithm used",
+      "enum": ["SHA-256", "SHA-3-512", "BLAKE3"]
+    },
+    "canonical_format_version": {
+      "type": "string",
+      "description": "Canonical encoding format version (e.g., '2.0')"
+    },
+    "canonical_encoding_type": {
+      "type": "string",
+      "description": "Type of canonical encoding used",
+      "enum": ["CBOR_DETERMINISTIC", "JSON_CANONICAL"]
+    },
+    "unicode_normalization": {
+      "type": "string",
+      "description": "Unicode normalization form applied",
+      "enum": ["NFC", "NFKC"],
+      "default": "NFC"
+    },
+    "signer_identity_id": {
+      "type": "string",
+      "description": "Identity that created this signature"
+    },
+    "key_version": {
+      "type": "integer",
+      "description": "Version of the signing key",
+      "minimum": 1
+    },
+    "signatures": {
+      "type": "object",
+      "description": "Signature data (classical and optionally post-quantum)",
+      "required": ["classical"],
+      "properties": {
+        "classical": {
+          "type": "object",
+          "description": "Classical signature (Ed25519)",
+          "required": ["algorithm", "signature", "pubkey"],
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["Ed25519", "Ed448"]
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature bytes (hex encoded)",
+              "pattern": "^[0-9a-fA-F]+$"
+            },
+            "pubkey": {
+              "type": "string",
+              "description": "Public key (hex encoded)",
+              "pattern": "^[0-9a-fA-F]+$"
+            }
+          }
+        },
+        "post_quantum": {
+          "type": "object",
+          "description": "Post-quantum signature (optional during migration)",
+          "required": ["algorithm", "signature", "pubkey"],
+          "properties": {
+            "algorithm": {
+              "type": "string",
+              "enum": ["Dilithium3", "Dilithium5"]
+            },
+            "signature": {
+              "type": "string",
+              "description": "Signature bytes (hex encoded)",
+              "pattern": "^[0-9a-fA-F]+$"
+            },
+            "pubkey": {
+              "type": "string",
+              "description": "Public key (hex encoded)",
+              "pattern": "^[0-9a-fA-F]+$"
+            }
+          }
+        }
+      }
+    },
+    "signature_policy": {
+      "type": "string",
+      "description": "Signature validation policy for this bundle",
+      "enum": [
+        "REQUIRE_CLASSICAL_ONLY",
+        "REQUIRE_CLASSICAL_AND_OPTIONAL_PQ",
+        "REQUIRE_CLASSICAL_AND_PQ",
+        "REQUIRE_PQ_ONLY"
+      ],
+      "default": "REQUIRE_CLASSICAL_ONLY"
+    },
+    "timestamps": {
+      "type": "array",
+      "description": "RFC 3161 timestamp tokens from multiple TSAs for redundancy",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["tsa_id", "timestamp_token", "signed_time"],
+        "properties": {
+          "tsa_id": {
+            "type": "string",
+            "description": "Timestamp authority identifier"
+          },
+          "timestamp_token": {
+            "type": "string",
+            "description": "Base64-encoded RFC 3161 TimeStampToken"
+          },
+          "signed_time": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time from TSA (ISO 8601)"
+          },
+          "tsa_signature": {
+            "type": "string",
+            "description": "TSA signature over token (hex encoded)",
+            "pattern": "^[0-9a-fA-F]+$"
+          }
+        }
+      }
+    },
+    "timestamp_quorum": {
+      "type": "string",
+      "description": "TSA quorum requirement (e.g., '2-of-3')",
+      "pattern": "^\\d+-of-\\d+$"
+    },
+    "ledger_entry_hash": {
+      "type": "string",
+      "description": "Hash of corresponding ledger entry",
+      "pattern": "^[0-9a-fA-F]+$"
+    },
+    "merkle_inclusion_proof": {
+      "$ref": "#/definitions/inclusion_proof"
+    },
+    "identity_inclusion_proof": {
+      "type": "object",
+      "description": "Proof that signer identity is in identity tree (enables offline verification)",
+      "required": ["identity_record", "merkle_proof", "tree_root"],
+      "properties": {
+        "identity_record": {
+          "type": "object",
+          "description": "Complete identity record for offline verification"
+        },
+        "merkle_proof": {
+          "type": "array",
+          "description": "Merkle proof for identity inclusion",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]+$"
+          }
+        },
+        "tree_root": {
+          "type": "string",
+          "description": "Identity tree root hash",
+          "pattern": "^[0-9a-fA-F]+$"
+        }
+      }
+    },
+    "non_revocation_proof": {
+      "type": "object",
+      "description": "Proof that identity is not revoked (enables offline verification)",
+      "required": ["merkle_proof", "revocation_tree_root"],
+      "properties": {
+        "merkle_proof": {
+          "type": "array",
+          "description": "Merkle proof for non-revocation (exclusion proof)",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]+$"
+          }
+        },
+        "revocation_tree_root": {
+          "type": "string",
+          "description": "Revocation tree root hash",
+          "pattern": "^[0-9a-fA-F]+$"
+        }
+      }
+    },
+    "signed_tree_head_reference": {
+      "type": "object",
+      "description": "Reference to signed tree head with witness cosignatures",
+      "required": ["tree_size", "root_hash", "witness_quorum_met"],
+      "properties": {
+        "tree_size": {
+          "type": "integer",
+          "description": "Ledger tree size at signing time",
+          "minimum": 0
+        },
+        "root_hash": {
+          "type": "string",
+          "description": "Ledger root hash",
+          "pattern": "^[0-9a-fA-F]+$"
+        },
+        "witness_quorum_met": {
+          "type": "boolean",
+          "description": "Whether witness quorum was achieved for this tree head"
+        },
+        "witness_count": {
+          "type": "integer",
+          "description": "Number of witnesses that cosigned",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "definitions": {
+    "inclusion_proof": {
+      "type": "object",
+      "required": ["leaf_index", "leaf_hash", "tree_size", "path"],
+      "properties": {
+        "leaf_index": {
+          "type": "integer",
+          "description": "Index of the leaf in the tree",
+          "minimum": 0
+        },
+        "leaf_hash": {
+          "type": "string",
+          "description": "Hash of the leaf",
+          "pattern": "^[0-9a-fA-F]+$"
+        },
+        "tree_size": {
+          "type": "integer",
+          "description": "Size of the tree at proof time",
+          "minimum": 1
+        },
+        "path": {
+          "type": "array",
+          "description": "Hash path from leaf to root",
+          "items": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]+$"
+          }
+        }
+      }
+    }
+  }
+}
