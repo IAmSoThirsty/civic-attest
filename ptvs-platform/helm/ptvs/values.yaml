@@ -1,0 +1,20 @@
+replicaCount: 3
+
+image:
+  repository: registry/ptvs
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+resources:
+  requests:
+    cpu: 500m
+    memory: 512Mi
+  limits:
+    cpu: 1500m
+    memory: 1Gi
+
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 15
+  cpuUtilization: 65

@@ -1,0 +1,14 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: ptvs
+  namespace: mankind
+spec:
+  hosts:
+  - ptvs.mankind.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: ptvs.mankind.svc.cluster.local
+        port:
+          number: 80
